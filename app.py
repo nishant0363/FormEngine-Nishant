@@ -11,10 +11,6 @@ import plotly.graph_objects as go
 import os
 import requests
 
-# Configuration
-# SECRET_KEY = os.getenv("SECRET_KEY", "CK+mOFOUq/uEAlbQ77D1c9iKn5xZYCaAb+OZ6fcRAM5sYK0DSgVvPiFIyb88Nuem2cOryU2QYdxnkL3CAtAGRg==")
-# SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fxeccascddxuyscnpsax.supabase.co")
-# SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4ZWNjYXNjZGR4dXlzY25wc2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3MjU1NDcsImV4cCI6MjA2ODMwMTU0N30.KIfqbe4x__DhYibIS_9StwFeJreJgevKRy5Olw8xdSY")
 
 # Secure configuration via Streamlit secrets
 SECRET_KEY = st.secrets["SECRET_KEY"]
@@ -574,7 +570,10 @@ def show_create_form():
 def show_my_forms():
     """Show list of admin's forms with responses"""
     st.subheader("My Forms")
-    st.text("Click on a form to view responses")
+    st.markdown("""
+        Click on a form to view responses — 
+        <span style="color: darkred; font-weight: bold;">Please Refresh to see new responses</span>
+        """, unsafe_allow_html=True)
     
     forms = get_admin_forms(st.session_state.user_info['id'])
     
