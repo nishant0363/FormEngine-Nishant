@@ -572,7 +572,7 @@ def show_my_forms():
     st.subheader("My Forms")
     st.markdown("""
         Click on a form to view responses — 
-        <span style="color: darkred; font-weight: bold;">Please Refresh to see new responses</span>
+        <span style="color: darkred; font-weight: bold;">Please Click on Refresh Button on Top Right of page to see new responses</span>
         """, unsafe_allow_html=True)
     
     forms = get_admin_forms(st.session_state.user_info['id'])
