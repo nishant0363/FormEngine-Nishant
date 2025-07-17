@@ -11,14 +11,6 @@
 
 ![Dashboard Preview](https://drive.google.com/uc?export=view&id=1ZBkSzgeAxoU_YHeJUa3Xa1t_fV1tm8jH)
 
-## 📹 Video Demo
-
-[![Watch Demo](https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube)](VIDEO_LINK_HERE)
-
-*Click above to see a complete walkthrough of the application features*
-
----
-
 ## 🌟 Overview
 
 **cform-engine-nishant** is a sophisticated, full-stack feedback collection platform that enables administrators to create, distribute, and analyze custom feedback forms with real-time response tracking. Built with modern technologies and featuring a clean, responsive interface, this platform streamlines the entire feedback collection process from creation to analysis.
