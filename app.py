@@ -12,9 +12,14 @@ import os
 import requests
 
 # Configuration
-SECRET_KEY = os.getenv("SECRET_KEY", "CK+mOFOUq/uEAlbQ77D1c9iKn5xZYCaAb+OZ6fcRAM5sYK0DSgVvPiFIyb88Nuem2cOryU2QYdxnkL3CAtAGRg==")
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fxeccascddxuyscnpsax.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4ZWNjYXNjZGR4dXlzY25wc2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3MjU1NDcsImV4cCI6MjA2ODMwMTU0N30.KIfqbe4x__DhYibIS_9StwFeJreJgevKRy5Olw8xdSY")
+# SECRET_KEY = os.getenv("SECRET_KEY", "CK+mOFOUq/uEAlbQ77D1c9iKn5xZYCaAb+OZ6fcRAM5sYK0DSgVvPiFIyb88Nuem2cOryU2QYdxnkL3CAtAGRg==")
+# SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fxeccascddxuyscnpsax.supabase.co")
+# SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4ZWNjYXNjZGR4dXlzY25wc2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3MjU1NDcsImV4cCI6MjA2ODMwMTU0N30.KIfqbe4x__DhYibIS_9StwFeJreJgevKRy5Olw8xdSY")
+
+# Secure configuration via Streamlit secrets
+SECRET_KEY = st.secrets["SECRET_KEY"]
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
 # Supabase client setup with improved error handling
 class SupabaseClient:
