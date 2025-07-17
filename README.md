@@ -7,11 +7,10 @@
 
 ## 🎯 Try the Live Application
 
-**🔗 [Launch cform-engine-nishant - https://cform-engine-nishant.streamlit.app/](https://cform-engine-nishant.streamlit.app/)**
+**🔗Launch cform-engine-nishant - [https://cform-engine-nishant.streamlit.app/](https://cform-engine-nishant.streamlit.app/)**
 
-![Dashboard Preview](https://drive.google.com/file/d/1ZBkSzgeAxoU_YHeJUa3Xa1t_fV1tm8jH/view?usp=sharing)
+![Dashboard Preview](https://drive.google.com/uc?export=view&id=1ZBkSzgeAxoU_YHeJUa3Xa1t_fV1tm8jH)
 
-https://drive.google.com/file/d/1ZBkSzgeAxoU_YHeJUa3Xa1t_fV1tm8jH/view?usp=sharing
 ## 📹 Video Demo
 
 [![Watch Demo](https://img.shields.io/badge/Watch%20Demo-YouTube-red?style=for-the-badge&logo=youtube)](VIDEO_LINK_HERE)
