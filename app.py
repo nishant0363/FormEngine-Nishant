@@ -443,10 +443,9 @@ def show_auth_page():
         <strong>Nishant</strong> &nbsp; | &nbsp;
         📧 <a href="mailto:nishant0363@gmail.com" target="_blank">nishant0363@gmail.com</a> &nbsp; | &nbsp;
         📱 <a href="tel:+919306145426" target="_blank">+91-9306145426</a> &nbsp; | &nbsp;
-        🌐 <a href="https://nishant0363.github.io/projects.com" target="_blank">Portfolio</a> &nbsp; | &nbsp;
         💼 <a href="https://www.linkedin.com/in/nishant3603/" target="_blank">LinkedIn</a> &nbsp; | &nbsp;
         🐙 <a href="https://github.com/nishant0363" target="_blank">GitHub</a> &nbsp; | &nbsp;
-        📄 <a href="https://drive.google.com/file/d/1hOJqhdY38XSEGrRRrjJsipSg2taqWYu-/view?usp=drive_link" target="_blank">Resume</a>
+        📄 <a href="https://drive.google.com/file/d/1XPv4DTWq3_QCwWM4V0_m_SY6J0A1pY9e/view?usp=sharing" target="_blank">Resume</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -498,10 +497,9 @@ def show_dashboard():
         <strong>Nishant</strong> &nbsp; | &nbsp;
         📧 <a href="mailto:nishant0363@gmail.com" target="_blank">nishant0363@gmail.com</a> &nbsp; | &nbsp;
         📱 <a href="tel:+919306145426" target="_blank">+91-9306145426</a> &nbsp; | &nbsp;
-        🌐 <a href="https://nishant0363.github.io/projects.com" target="_blank">Portfolio</a> &nbsp; | &nbsp;
         💼 <a href="https://www.linkedin.com/in/nishant3603/" target="_blank">LinkedIn</a> &nbsp; | &nbsp;
         🐙 <a href="https://github.com/nishant0363" target="_blank">GitHub</a> &nbsp; | &nbsp;
-        📄 <a href="https://drive.google.com/file/d/1hOJqhdY38XSEGrRRrjJsipSg2taqWYu-/view?usp=drive_link" target="_blank">Resume</a>
+        📄 <a href="https://drive.google.com/file/d/1XPv4DTWq3_QCwWM4V0_m_SY6J0A1pY9e/view?usp=sharing" target="_blank">Resume</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -721,10 +719,9 @@ def show_public_form(form_id: str):
         <strong>Nishant</strong> &nbsp; | &nbsp;
         📧 <a href="mailto:nishant0363@gmail.com" target="_blank">nishant0363@gmail.com</a> &nbsp; | &nbsp;
         📱 <a href="tel:+919306145426" target="_blank">+91-9306145426</a> &nbsp; | &nbsp;
-        🌐 <a href="https://nishant0363.github.io/projects.com" target="_blank">Portfolio</a> &nbsp; | &nbsp;
         💼 <a href="https://www.linkedin.com/in/nishant3603/" target="_blank">LinkedIn</a> &nbsp; | &nbsp;
         🐙 <a href="https://github.com/nishant0363" target="_blank">GitHub</a> &nbsp; | &nbsp;
-        📄 <a href="https://drive.google.com/file/d/1hOJqhdY38XSEGrRRrjJsipSg2taqWYu-/view?usp=drive_link" target="_blank">Resume</a>
+        📄 <a href="https://drive.google.com/file/d/1XPv4DTWq3_QCwWM4V0_m_SY6J0A1pY9e/view?usp=sharing" target="_blank">Resume</a>
     </div>
     """, unsafe_allow_html=True)
 
