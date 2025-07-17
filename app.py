@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "CK+mOFOUq/uEAlbQ77D1c9iKn5xZYCaAb+OZ6fcRAM
 SUPABASE_URL = os.getenv("SUPABASE_URL", "https://fxeccascddxuyscnpsax.supabase.co")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4ZWNjYXNjZGR4dXlzY25wc2F4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI3MjU1NDcsImV4cCI6MjA2ODMwMTU0N30.KIfqbe4x__DhYibIS_9StwFeJreJgevKRy5Olw8xdSY")
 
-# Supabase client setup
+# Supabase client setup with improved error handling
 class SupabaseClient:
     def __init__(self, url: str, key: str):
         self.url = url
@@ -28,30 +28,92 @@ class SupabaseClient:
         }
     
     def insert(self, table: str, data: dict):
-        """Insert data into table"""
-        response = requests.post(
-            f"{self.url}/rest/v1/{table}",
-            headers=self.headers,
-            json=data
-        )
-        return response.json() if response.status_code == 201 else None
+        """Insert data into table with improved error handling"""
+        try:
+            response = requests.post(
+                f"{self.url}/rest/v1/{table}",
+                headers=self.headers,
+                json=data
+            )
+            
+            # Debug information
+            print(f"Insert response status: {response.status_code}")
+            print(f"Insert response text: {response.text}")
+            
+            if response.status_code == 201:
+                # Check if response has content before trying to parse JSON
+                if response.text and response.text.strip():
+                    try:
+                        return response.json()
+                    except json.JSONDecodeError:
+                        print("Warning: Could not parse JSON response, but insert was successful")
+                        return {"success": True}  # Return success indicator
+                else:
+                    # Empty response but successful status code
+                    return {"success": True}
+            else:
+                print(f"Insert failed with status {response.status_code}: {response.text}")
+                return None
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {e}")
+            return None
+        except Exception as e:
+            print(f"Unexpected error in insert: {e}")
+            return None
     
     def select(self, table: str, query: str = ""):
-        """Select data from table"""
-        url = f"{self.url}/rest/v1/{table}"
-        if query:
-            url += f"?{query}"
-        response = requests.get(url, headers=self.headers)
-        return response.json() if response.status_code == 200 else []
+        """Select data from table with improved error handling"""
+        try:
+            url = f"{self.url}/rest/v1/{table}"
+            if query:
+                url += f"?{query}"
+            
+            response = requests.get(url, headers=self.headers)
+            
+            # Debug information
+            print(f"Select response status: {response.status_code}")
+            
+            if response.status_code == 200:
+                if response.text and response.text.strip():
+                    try:
+                        return response.json()
+                    except json.JSONDecodeError:
+                        print("Warning: Could not parse JSON response from select")
+                        return []
+                else:
+                    return []
+            else:
+                print(f"Select failed with status {response.status_code}: {response.text}")
+                return []
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {e}")
+            return []
+        except Exception as e:
+            print(f"Unexpected error in select: {e}")
+            return []
     
     def update(self, table: str, query: str, data: dict):
-        """Update data in table"""
-        response = requests.patch(
-            f"{self.url}/rest/v1/{table}?{query}",
-            headers=self.headers,
-            json=data
-        )
-        return response.status_code == 204
+        """Update data in table with improved error handling"""
+        try:
+            response = requests.patch(
+                f"{self.url}/rest/v1/{table}?{query}",
+                headers=self.headers,
+                json=data
+            )
+            
+            # Debug information
+            print(f"Update response status: {response.status_code}")
+            
+            return response.status_code == 204
+            
+        except requests.exceptions.RequestException as e:
+            print(f"Request error: {e}")
+            return False
+        except Exception as e:
+            print(f"Unexpected error in update: {e}")
+            return False
 
 # Initialize Supabase client
 supabase = SupabaseClient(SUPABASE_URL, SUPABASE_KEY)
@@ -83,137 +145,177 @@ def verify_jwt_token(token: str) -> Optional[Dict]:
     except jwt.InvalidTokenError:
         return None
 
-# Database operations using Supabase
+# Database operations using Supabase with improved error handling
 def register_user(username: str, email: str, password: str) -> bool:
     """Register a new admin user"""
-    # Check if user already exists
-    existing = supabase.select("users", f"username=eq.{username}")
-    if existing:
+    try:
+        # Check if user already exists
+        existing = supabase.select("users", f"username=eq.{username}")
+        if existing and len(existing) > 0:
+            return False
+        
+        existing_email = supabase.select("users", f"email=eq.{email}")
+        if existing_email and len(existing_email) > 0:
+            return False
+        
+        # Create new user
+        password_hash = hash_password(password)
+        
+        user_data = {
+            'username': username,
+            'email': email,
+            'password_hash': password_hash,
+            'created_at': datetime.datetime.now().isoformat()
+        }
+        
+        result = supabase.insert("users", user_data)
+        return result is not None
+        
+    except Exception as e:
+        print(f"Error in register_user: {e}")
         return False
-    
-    existing_email = supabase.select("users", f"email=eq.{email}")
-    if existing_email:
-        return False
-    
-    # Create new user
-    password_hash = hash_password(password)
-    
-    user_data = {
-        'username': username,
-        'email': email,
-        'password_hash': password_hash,
-        'created_at': datetime.datetime.now().isoformat()
-    }
-    
-    result = supabase.insert("users", user_data)
-    return result is not None
 
 def authenticate_user(username: str, password: str) -> Optional[Dict]:
     """Authenticate user and return user info"""
-    users = supabase.select("users", f"username=eq.{username}")
-    
-    if users and len(users) > 0:
-        user = users[0]
-        if verify_password(password, user['password_hash']):
-            return {
-                'id': user['id'],
-                'username': user['username'],
-                'email': user['email']
-            }
-    return None
+    try:
+        users = supabase.select("users", f"username=eq.{username}")
+        
+        if users and len(users) > 0:
+            user = users[0]
+            if verify_password(password, user['password_hash']):
+                return {
+                    'id': user['id'],
+                    'username': user['username'],
+                    'email': user['email']
+                }
+        return None
+        
+    except Exception as e:
+        print(f"Error in authenticate_user: {e}")
+        return None
 
 def create_form(admin_id: int, title: str, questions: List[Dict]) -> str:
     """Create a new feedback form"""
-    form_id = str(uuid.uuid4())
-    
-    form_data = {
-        'id': form_id,
-        'admin_id': admin_id,
-        'title': title,
-        'questions': json.dumps(questions),
-        'created_at': datetime.datetime.now().isoformat()
-    }
-    
-    result = supabase.insert("forms", form_data)
-    return form_id if result else None
+    try:
+        form_id = str(uuid.uuid4())
+        
+        form_data = {
+            'id': form_id,
+            'admin_id': admin_id,
+            'title': title,
+            'questions': json.dumps(questions),
+            'created_at': datetime.datetime.now().isoformat()
+        }
+        
+        result = supabase.insert("forms", form_data)
+        return form_id if result else None
+        
+    except Exception as e:
+        print(f"Error in create_form: {e}")
+        return None
 
 def get_form(form_id: str) -> Optional[Dict]:
     """Get form by ID"""
-    forms = supabase.select("forms", f"id=eq.{form_id}")
-    
-    if forms and len(forms) > 0:
-        form = forms[0]
-        return {
-            'id': form['id'],
-            'title': form['title'],
-            'questions': json.loads(form['questions'])
-        }
-    return None
+    try:
+        forms = supabase.select("forms", f"id=eq.{form_id}")
+        
+        if forms and len(forms) > 0:
+            form = forms[0]
+            return {
+                'id': form['id'],
+                'title': form['title'],
+                'questions': json.loads(form['questions'])
+            }
+        return None
+        
+    except Exception as e:
+        print(f"Error in get_form: {e}")
+        return None
 
 def get_admin_forms(admin_id: int) -> List[Dict]:
     """Get all forms created by an admin"""
-    forms = supabase.select("forms", f"admin_id=eq.{admin_id}&order=created_at.desc")
-    
-    return [{
-        'id': form['id'],
-        'title': form['title'],
-        'created_at': form['created_at']
-    } for form in forms]
+    try:
+        forms = supabase.select("forms", f"admin_id=eq.{admin_id}&order=created_at.desc")
+        
+        return [{
+            'id': form['id'],
+            'title': form['title'],
+            'created_at': form['created_at']
+        } for form in forms]
+        
+    except Exception as e:
+        print(f"Error in get_admin_forms: {e}")
+        return []
 
 def submit_response(form_id: str, responses: Dict) -> bool:
     """Submit a response to a form"""
-    response_data = {
-        'form_id': form_id,
-        'responses': json.dumps(responses),
-        'submitted_at': datetime.datetime.now().isoformat()
-    }
-    
-    result = supabase.insert("responses", response_data)
-    return result is not None
+    try:
+        response_data = {
+            'form_id': form_id,
+            'responses': json.dumps(responses),
+            'submitted_at': datetime.datetime.now().isoformat()
+        }
+        
+        result = supabase.insert("responses", response_data)
+        return result is not None
+        
+    except Exception as e:
+        print(f"Error in submit_response: {e}")
+        return False
 
 def get_form_responses(form_id: str) -> List[Dict]:
     """Get all responses for a form"""
-    responses = supabase.select("responses", f"form_id=eq.{form_id}&order=submitted_at.desc")
-    
-    return [{
-        'responses': json.loads(response['responses']),
-        'submitted_at': response['submitted_at']
-    } for response in responses]
+    try:
+        responses = supabase.select("responses", f"form_id=eq.{form_id}&order=submitted_at.desc")
+        
+        return [{
+            'responses': json.loads(response['responses']),
+            'submitted_at': response['submitted_at']
+        } for response in responses]
+        
+    except Exception as e:
+        print(f"Error in get_form_responses: {e}")
+        return []
 
 def get_recent_responses(admin_id: int, minutes: int = 5) -> List[Dict]:
     """Get recent responses for admin's forms within specified minutes"""
-    # Get admin's forms
-    admin_forms = supabase.select("forms", f"admin_id=eq.{admin_id}")
-    admin_form_ids = [form['id'] for form in admin_forms]
-    
-    if not admin_form_ids:
-        return []
-    
-    # Get recent responses
-    cutoff_time = (datetime.datetime.now() - datetime.timedelta(minutes=minutes)).isoformat()
-    
-    recent_responses = []
-    for form_id in admin_form_ids:
-        responses = supabase.select("responses", 
-                                  f"form_id=eq.{form_id}&submitted_at=gte.{cutoff_time}&order=submitted_at.desc")
+    try:
+        # Get admin's forms
+        admin_forms = supabase.select("forms", f"admin_id=eq.{admin_id}")
+        admin_form_ids = [form['id'] for form in admin_forms]
         
-        for response in responses:
-            # Get form title
-            form_title = next((form['title'] for form in admin_forms if form['id'] == form_id), 'Unknown Form')
-            recent_responses.append({
-                'form_title': form_title,
-                'submitted_at': response['submitted_at'],
-                'responses': json.loads(response['responses'])
-            })
-    
-    return sorted(recent_responses, key=lambda x: x['submitted_at'], reverse=True)
+        if not admin_form_ids:
+            return []
+        
+        # Get recent responses
+        cutoff_time = (datetime.datetime.now() - datetime.timedelta(minutes=minutes)).isoformat()
+        
+        recent_responses = []
+        for form_id in admin_form_ids:
+            responses = supabase.select("responses", 
+                                      f"form_id=eq.{form_id}&submitted_at=gte.{cutoff_time}&order=submitted_at.desc")
+            
+            for response in responses:
+                # Get form title
+                form_title = next((form['title'] for form in admin_forms if form['id'] == form_id), 'Unknown Form')
+                recent_responses.append({
+                    'form_title': form_title,
+                    'submitted_at': response['submitted_at'],
+                    'responses': json.loads(response['responses'])
+                })
+        
+        return sorted(recent_responses, key=lambda x: x['submitted_at'], reverse=True)
+        
+    except Exception as e:
+        print(f"Error in get_recent_responses: {e}")
+        return []
 
 def get_app_url() -> str:
     """Get the current app URL for Streamlit Cloud"""
     # Replace with your actual Streamlit Cloud URL
     return "https://cform-engine-nishant.streamlit.app/"
 
-# Streamlit App
+# Rest of your code remains the same...
 def main():
     st.set_page_config(
         page_title="cform-engine-nishant",
