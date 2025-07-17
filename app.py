@@ -211,13 +211,13 @@ def get_recent_responses(admin_id: int, minutes: int = 5) -> List[Dict]:
 def get_app_url() -> str:
     """Get the current app URL for Streamlit Cloud"""
     # Replace with your actual Streamlit Cloud URL
-    return "https://your-app-name.streamlit.app"
+    return "https://cform-engine-nishant.streamlit.app/"
 
 # Streamlit App
 def main():
     st.set_page_config(
-        page_title="Feedback Collection Platform",
-        page_icon="📋",
+        page_title="cform-engine-nishant",
+        page_icon="",
         layout="wide"
     )
     
